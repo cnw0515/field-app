@@ -1,47 +1,53 @@
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "05381074-341a-4512-b4b5-182563105d70",
-      safari_web_id: "web.onesignal.auto.5a0e980e-3622-4a00-983c-6238382c5f11", // iOS用の汎用ID
-      notifyButton: { enable: false }, // 余計なベルを出さない
-      allowLocalhostAsSecureOrigin: true
-    });
-  });
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>現場通知アプリ</title>
+    
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "05381074-341a-4512-b4b5-182563105d70", // ★要書き換え
+          safari_web_id: "web.onesignal.auto.5a0e980e-3622-4a00-983c-6238382c5f11",
+          notifyButton: { enable: false },
+        });
+      });
+    </script>
 
-  /* これを <style> の中に入れてください */
-body { 
-    background-color: #e5e7eb; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    height: 100vh; 
-}
-.card { 
-    background: white; 
-    padding: 2rem; 
-    border-radius: 1rem; 
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
-    max-width: 400px; 
-    width: 90%; 
-}
-h2 { color: #1f2937; margin-bottom: 1.5rem; }
-.btn-portal { 
-    background: #2563eb; 
-    color: white; 
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
-}
-.btn-notify { 
-    background: #dc2626; 
-    color: white; 
-    box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
-}
-  // 赤いボタンを押した時の動作
-  document.getElementById('notify-btn').addEventListener('click', function() {
-    OneSignalDeferred.push(function() {
-      OneSignal.Notifications.requestPermission();
-    });
-  });
-</script>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f0f2f5; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .card { background: white; margin: 20px; padding: 30px 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 85%; max-width: 400px; }
+        button { width: 100%; padding: 15px; margin-top: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .btn-portal { background: #007bff; color: white; }
+        .btn-notify { background: #d93025; color: white; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>📢 現場ポータル</h2>
+        <button class="btn-portal" onclick="window.location.href='https://sites.google.com/view/cnw-portalsite/'">ポータルサイトを閲覧</button>
+        <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+        <p style="font-size: 14px; color: #666;">緊急通知を受け取るには<br>下のボタンで許可してください</p>
+        <button class="btn-notify" id="notify-btn">通知を許可する</button>
+    </div>
+
+    <script>
+        // Service Workerの登録
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        // ボタンクリックで通知許可を求める
+        document.getElementById('notify-btn').addEventListener('click', function() {
+            OneSignalDeferred.push(function() {
+                OneSignal.Notifications.requestPermission();
+            });
+        });
+    </script>
+</body>
+</html>
