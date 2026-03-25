@@ -9,27 +9,15 @@
     <title>現場お助けポータル</title>
 
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "05381074-341a-4512-b4b5-182563105d70",
-        });
-      });
-
-      // 画面上のどこかをタップした時に実行する関数
-      function askNotification() {
-        // 透明レイヤーを消す
-        document.getElementById('touch-layer').style.display = 'none';
-
-        // 日本語で確認。OKならiPhone標準の許可（英語）を出す
-        if (confirm("現場からのお知らせを受け取りますか？\n\n※この後の画面で「許可」を選択してください。")) {
-          OneSignalDeferred.push(function(OneSignal) {
-            OneSignal.showNativePrompt();
-          });
-        }
-      }
-    </script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "05381074-341a-4512-b4b5-182563105d70",
+    });
+    // ↑ これだけで、設定したベルが画面の端（右下など）に自動で出ます
+  });
+</script>
 
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f8f9fa; }
