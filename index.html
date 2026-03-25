@@ -14,8 +14,29 @@
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "05381074-341a-4512-b4b5-182563105d70",
+          // ここから日本語化の設定を追加
+          promptOptions: {
+            slidedown: {
+              prompts: [
+                {
+                  type: "push",
+                  autoPrompt: true,
+                  text: {
+                    actionMessage: "現場からのお知らせや緊急通知を受け取りますか？", // メインの文章
+                    acceptButton: "受け取る", // 青いボタン
+                    cancelButton: "今はしない" // 白いボタン
+                  },
+                  delay: {
+                    pageViews: 1,
+                    timeDelay: 1
+                  }
+                }
+              ]
+            }
+          }
         });
-        // ユーザーが画面を触った時にポップアップが出るように準備
+        
+        // これで日本語版のポップアップが飛び出します
         OneSignal.showNativePrompt();
       });
     </script>
