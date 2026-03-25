@@ -9,26 +9,40 @@
     <title>現場お助けポータル</title>
 
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "05381074-341a-4512-b4b5-182563105d70",
-    });
-    // ↑ これだけで、設定したベルが画面の端（右下など）に自動で出ます
-  });
-</script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "05381074-341a-4512-b4b5-182563105d70",
+          // 自動でポップアップが出るのを防ぎ、ベルだけに任せる設定
+          promptOptions: {
+            slidedown: {
+              enabled: false
+            }
+          },
+          // 以前のセッション情報をクリアしやすくする
+          allowLocalhostAsSecureOrigin: true,
+        });
+      });
+    </script>
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f8f9fa; }
-        iframe { width: 100%; height: 100%; border: none; }
-        /* 画面を1回タップさせるための透明レイヤー */
-        #touch-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; display: block; }
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            overflow: hidden; 
+            background-color: #f8f9fa; 
+        }
+        /* GASを表示する枠のスタイル */
+        iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
     </style>
 </head>
 <body>
-    <div id="touch-layer" onclick="askNotification()"></div>
-
     <iframe src="https://script.google.com/macros/s/AKfycbxsQXw26ec5mfJAlhtmR6sEGwV8gdm2B1n0lHqDhKvvde728bi2urwyW1tfKDJbOgo/exec?pw=cnw0515"></iframe>
 </body>
 </html>
