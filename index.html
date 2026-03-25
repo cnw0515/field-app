@@ -2,57 +2,16 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>現場通知アプリ</title>
-    
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "05381074-341a-4512-b4b5-182563105d70", // あなたのIDを反映済み
-          safari_web_id: "web.onesignal.auto.5a0e980e-3622-4a00-983c-6238382c5f11", // 暫定ID。動かない場合は要確認
-          notifyButton: { enable: false },
-        });
-      });
-    </script>
-
+    <title>現場お助けポータル</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #f0f2f5; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .card { background: white; margin: 20px; padding: 30px 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 85%; max-width: 400px; }
-        h2 { color: #333; margin-top: 0; }
-        button { width: 100%; padding: 18px; margin-top: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: opacity 0.2s; }
-        .btn-portal { background: #007bff; color: white; }
-        .btn-notify { background: #d93025; color: white; }
-        p { font-size: 14px; color: #666; line-height: 1.5; }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>📢 現場ポータル</h2>
-        <button class="btn-portal" onclick="window.location.href='https://sites.google.com/view/cnw-portalsite/'">ポータルサイトを閲覧</button>
-        
-        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
-        
-        <p>緊急通知を受け取るには<br>下のボタンで「許可」してください</p>
-        <button class="btn-notify" id="notify-btn">通知を許可する</button>
-    </div>
-
-    <script>
-        // Service Workerの登録
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-
-        // 赤いボタンを押した時にOneSignalの許可ダイアログを呼び出す
-        document.getElementById('notify-btn').addEventListener('click', function() {
-            OneSignalDeferred.push(function() {
-                OneSignal.Notifications.requestPermission();
-            });
-        });
-    </script>
+    <iframe src="https://script.google.com/macros/s/◯◯◯/exec"></iframe>
 </body>
 </html>
