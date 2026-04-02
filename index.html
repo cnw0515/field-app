@@ -2,126 +2,51 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    
-    <link rel="apple-touch-icon" href="">
-    
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon.png">
     <title>現場お助けポータル</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: -apple-system, sans-serif; background-color: #ffffff; overflow: hidden; display: flex; flex-direction: column; }
-        .search-area { padding: 15px 20px 5px 20px; flex-shrink: 0; }
-        .search-input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #ddd; border-radius: 25px; font-size: 16px; background-color: #f8f9fa; box-sizing: border-box; }
-        .refresh-bar { text-align: right; padding: 0 20px; flex-shrink: 0; }
-        .refresh-link { font-size: 11px; color: #bbb; cursor: pointer; }
-        .main-content { flex: 1; display: flex; flex-direction: column; padding: 0 15px 15px 15px; gap: 10px; }
-        .status-card { background: linear-gradient(135deg, #4dd0e1, #00bcd4); color: white; padding: 12px; border-radius: 15px; flex-shrink: 0; }
-        .status-time { font-size: 18px; font-weight: bold; }
-        .info-card { background-color: #fff9c4; border-left: 5px solid #fbc02d; padding: 8px 12px; border-radius: 5px; font-size: 12px; }
 
-        /* ★ボタンエリアを確実に表示させる設定 */
-        .button-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 12px; 
-            height: 60vh; /* 画面の6割をボタンに使うよう固定 */
-            margin-top: 5px;
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "05381074-341a-4512-b4b5-182563105d70",
+        });
+      });
+
+      // 画面を触った時に実行される関数
+      function startApp() {
+        // 透明な膜を消してポータルを操作可能にする
+        document.getElementById('touch-layer').style.display = 'none';
+
+        // 通知の許可を求める（iPhone標準の英語ダイアログが出ます）
+        OneSignalDeferred.push(function(OneSignal) {
+          OneSignal.Notifications.requestPermission();
+        });
+      }
+    </script>
+
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f8f9fa; }
+        iframe { width: 100%; height: 100%; border: none; z-index: 1; }
+        /* 画面全体を覆う透明なタップ待ちエリア */
+        #touch-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: transparent;
         }
-        .menu-btn { 
-            background-color: #ffffff; border: 1px solid #ddd; border-radius: 15px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            text-decoration: none; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .btn-icon { font-size: 28px; margin-bottom: 5px; }
-        .btn-text { font-size: 14px; font-weight: bold; text-align: center; }
-        .hidden { display: none !important; }
     </style>
 </head>
-<body onload="initializePortal()">
+<body onclick="startApp()">
+    <div id="touch-layer"></div>
 
-    <div class="search-area">
-        <input type="text" id="searchInput" class="search-input" placeholder="検索..." oninput="handleSearch()">
-    </div>
-    
-    <div class="refresh-bar">
-        <span onclick="refreshData()" class="refresh-link" id="refreshBtn">🔄 最新の情報に更新</span>
-    </div>
-
-    <div class="main-content">
-        <div class="status-card">
-            <div style="font-size:11px;">現場ポータル稼働中</div>
-            <div class="status-time" id="lastUpdateTime">Loading...</div>
-        </div>
-        <div id="newsArea"></div>
-        <div class="button-grid" id="btnContainer"></div>
-    </div>
-
-    <script>
-        function initializePortal() {
-            // キャッシュがあれば即表示
-            const cached = localStorage.getItem('portal_cache');
-            if (cached) { renderPortal(JSON.parse(cached)); }
-            loadDataFromServer();
-        }
-
-        function loadDataFromServer() {
-            google.script.run
-                .withSuccessHandler(function(data) {
-                    localStorage.setItem('portal_cache', JSON.stringify(data));
-                    renderPortal(data);
-                })
-                .getPortalAllData();
-        }
-
-        function refreshData() {
-            document.getElementById('refreshBtn').innerText = "⏳ 更新中...";
-            loadDataFromServer();
-        }
-
-        function renderPortal(data) {
-            document.getElementById('lastUpdateTime').innerText = "最終更新: " + data.lastUpdate;
-            
-            // お知らせ表示
-            const newsArea = document.getElementById('newsArea');
-            newsArea.innerHTML = '';
-            data.news.forEach(item => {
-                newsArea.innerHTML += `<div class="info-card"><strong>${item.date}</strong> ${item.text}</div>`;
-            });
-
-            // ボタン表示
-            const container = document.getElementById('btnContainer');
-            container.innerHTML = '';
-            data.buttons.forEach((btn, index) => {
-                const a = document.createElement('a');
-                a.href = btn.url || "#";
-                
-                // KY登録などは別タブで開く
-                if (btn.url && !btn.url.startsWith('tel:')) {
-                    a.target = "_blank";
-                }
-
-                a.className = 'menu-btn';
-                if (btn.color) a.style.backgroundColor = btn.color;
-                
-                a.innerHTML = `
-                    <div class="btn-icon">${btn.icon || '📝'}</div>
-                    <div class="btn-text">${btn.name.replace(/\n/g, '<br>')}</div>
-                `;
-                a.setAttribute('data-search', (btn.name + (btn.note || "")).toLowerCase());
-                container.appendChild(a);
-            });
-            document.getElementById('refreshBtn').innerText = "🔄 最新の情報に更新";
-        }
-
-        function handleSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const btns = document.querySelectorAll('.menu-btn');
-            btns.forEach(btn => {
-                btn.classList.toggle('hidden', !btn.getAttribute('data-search').includes(query));
-            });
-        }
-    </script>
+    <iframe src="https://script.google.com/macros/s/AKfycbxsQXw26ec5mfJAlhtmR6sEGwV8gdm2B1n0lHqDhKvvde728bi2urwyW1tfKDJbOgo/exec?pw=cnw0515"></iframe>
 </body>
 </html>
