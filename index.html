@@ -3,77 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/q73Y9544/icon-comnetwork.png?v=4">
+    <link rel="apple-touch-icon" href="">
     
     <title>現場お助けポータル</title>
     <style>
-        body, html { 
-            margin: 0; padding: 0; height: 100vh; 
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
-            background-color: #ffffff; overflow: hidden; display: flex; flex-direction: column; 
-        }
-
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: -apple-system, sans-serif; background-color: #ffffff; overflow: hidden; display: flex; flex-direction: column; }
         .search-area { padding: 15px 20px 5px 20px; flex-shrink: 0; }
-        .search-input { 
-            width: 100%; padding: 12px 15px 12px 40px; 
-            border: 1px solid #ddd; border-radius: 25px; 
-            font-size: 16px; background-color: #f8f9fa; box-sizing: border-box; 
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); 
-            background-repeat: no-repeat; background-position: 15px center; 
-        }
-
+        .search-input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #ddd; border-radius: 25px; font-size: 16px; background-color: #f8f9fa; box-sizing: border-box; }
         .refresh-bar { text-align: right; padding: 0 20px; flex-shrink: 0; }
-        .refresh-link { font-size: 11px; color: #bbb; text-decoration: none; cursor: pointer; }
-
-        .main-content { 
-            flex: 1; display: flex; flex-direction: column; 
-            padding: 0 15px 15px 15px; gap: 10px;
-            justify-content: space-between; /* 要素を上下に分散 */
-        }
-
-        .status-card { 
-            background: linear-gradient(135deg, #4dd0e1, #00bcd4); 
-            color: white; padding: 12px; border-radius: 15px; flex-shrink: 0;
-        }
+        .refresh-link { font-size: 11px; color: #bbb; cursor: pointer; }
+        .main-content { flex: 1; display: flex; flex-direction: column; padding: 0 15px 15px 15px; gap: 10px; }
+        .status-card { background: linear-gradient(135deg, #4dd0e1, #00bcd4); color: white; padding: 12px; border-radius: 15px; flex-shrink: 0; }
         .status-time { font-size: 18px; font-weight: bold; }
+        .info-card { background-color: #fff9c4; border-left: 5px solid #fbc02d; padding: 8px 12px; border-radius: 5px; font-size: 12px; }
 
-        .info-card { 
-            background-color: #fff9c4; border-left: 5px solid #fbc02d; 
-            padding: 8px 12px; border-radius: 5px; font-size: 12px; color: #333; 
-        }
-
-        /* 6つのボタンエリア：高さをしっかり確保 */
+        /* ★ボタンエリアを確実に表示させる設定 */
         .button-grid { 
             display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            grid-template-rows: repeat(3, 1fr); /* 3行固定 */
-            gap: 10px; 
-            flex: 1; /* 残りのスペースをすべて使う */
-            min-height: 300px; /* 最小高さを確保 */
-            margin-bottom: 10px;
+            grid-template-columns: 1fr 1fr; 
+            grid-template-rows: repeat(3, 1fr); 
+            gap: 12px; 
+            height: 60vh; /* 画面の6割をボタンに使うよう固定 */
+            margin-top: 5px;
         }
-
         .menu-btn { 
-            background-color: #ffffff; border: 1px solid #eee; border-radius: 15px; 
+            background-color: #ffffff; border: 1px solid #ddd; border-radius: 15px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            text-decoration: none; color: #333; padding: 5px; box-sizing: border-box; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-decoration: none; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .menu-btn:active { transform: scale(0.95); background-color: #f5f5f5; }
-        .btn-icon { font-size: 26px; margin-bottom: 4px; }
-        .btn-text { font-size: 12px; font-weight: bold; text-align: center; line-height: 1.2; }
-
+        .btn-icon { font-size: 28px; margin-bottom: 5px; }
+        .btn-text { font-size: 14px; font-weight: bold; text-align: center; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body onload="initializePortal()">
 
     <div class="search-area">
-        <input type="text" id="searchInput" class="search-input" placeholder="逆引き検索..." oninput="handleSearch()">
+        <input type="text" id="searchInput" class="search-input" placeholder="検索..." oninput="handleSearch()">
     </div>
     
     <div class="refresh-bar">
@@ -81,97 +50,76 @@
     </div>
 
     <div class="main-content">
-        <div class="status-card" id="statusArea">
-            <div style="font-size:11px; opacity:0.9;">現場ポータル稼働中</div>
+        <div class="status-card">
+            <div style="font-size:11px;">現場ポータル稼働中</div>
             <div class="status-time" id="lastUpdateTime">Loading...</div>
         </div>
-
-        <div id="newsArea" style="display:flex; flex-direction:column; gap:5px;"></div>
-
-        <div class="button-grid" id="btnContainer">
-            <div class="menu-btn" style="opacity:0.3;"></div>
-            <div class="menu-btn" style="opacity:0.3;"></div>
-            <div class="menu-btn" style="opacity:0.3;"></div>
-            <div class="menu-btn" style="opacity:0.3;"></div>
-            <div class="menu-btn" style="opacity:0.3;"></div>
-            <div class="menu-btn" style="opacity:0.3;"></div>
-        </div>
+        <div id="newsArea"></div>
+        <div class="button-grid" id="btnContainer"></div>
     </div>
 
     <script>
         function initializePortal() {
+            // キャッシュがあれば即表示
             const cached = localStorage.getItem('portal_cache');
-            if (cached) {
-                renderPortal(JSON.parse(cached));
-            }
+            if (cached) { renderPortal(JSON.parse(cached)); }
             loadDataFromServer();
         }
 
-        function loadDataFromServer(isManual = false) {
-            const btn = document.getElementById('refreshBtn');
-            if (isManual) btn.innerText = "⏳ 更新中...";
-
+        function loadDataFromServer() {
             google.script.run
                 .withSuccessHandler(function(data) {
                     localStorage.setItem('portal_cache', JSON.stringify(data));
                     renderPortal(data);
-                    if (isManual) {
-                        btn.innerText = "🔄 最新の情報に更新";
-                    }
                 })
                 .getPortalAllData();
         }
 
         function refreshData() {
-            loadDataFromServer(true);
+            document.getElementById('refreshBtn').innerText = "⏳ 更新中...";
+            loadDataFromServer();
         }
 
         function renderPortal(data) {
             document.getElementById('lastUpdateTime').innerText = "最終更新: " + data.lastUpdate;
-
+            
+            // お知らせ表示
             const newsArea = document.getElementById('newsArea');
             newsArea.innerHTML = '';
-            if (data.news && data.news.length > 0) {
-                data.news.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'info-card';
-                    div.innerHTML = `<strong>${item.date}</strong> ${item.text}`;
-                    newsArea.appendChild(div);
-                });
-            }
+            data.news.forEach(item => {
+                newsArea.innerHTML += `<div class="info-card"><strong>${item.date}</strong> ${item.text}</div>`;
+            });
 
+            // ボタン表示
             const container = document.getElementById('btnContainer');
             container.innerHTML = '';
             data.buttons.forEach((btn, index) => {
                 const a = document.createElement('a');
                 a.href = btn.url || "#";
-
+                
+                // KY登録などは別タブで開く
                 if (btn.url && !btn.url.startsWith('tel:')) {
                     a.target = "_blank";
-                    a.rel = "noopener noreferrer";
                 }
-                
+
                 a.className = 'menu-btn';
                 if (btn.color) a.style.backgroundColor = btn.color;
-                if (index === 4 || index === 5) a.style.border = "2px solid #444";
-
-                const displayName = btn.name.replace(/\n/g, '<br>');
+                
                 a.innerHTML = `
                     <div class="btn-icon">${btn.icon || '📝'}</div>
-                    <div class="btn-text">${displayName}</div>
+                    <div class="btn-text">${btn.name.replace(/\n/g, '<br>')}</div>
                 `;
-                
                 a.setAttribute('data-search', (btn.name + (btn.note || "")).toLowerCase());
                 container.appendChild(a);
             });
+            document.getElementById('refreshBtn').innerText = "🔄 最新の情報に更新";
         }
 
         function handleSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const btns = document.querySelectorAll('.menu-btn');
             btns.forEach(btn => {
-                const target = btn.getAttribute('data-search');
-                btn.classList.toggle('hidden', !target.includes(query));
+                btn.classList.toggle('hidden', !btn.getAttribute('data-search').includes(query));
             });
         }
     </script>
