@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <link rel="apple-touch-icon" href="https://github.com/cnw0515/field-app/blob/main/%E5%B9%BE%E4%BD%95%E5%AD%A6%E7%9A%84%E3%81%AA%E3%83%80%E3%82%A4%E3%83%A4%E3%83%A2%E3%83%B3%E3%83%89%E3%83%AD%E3%82%B4.png?raw=true&v=20260403v2">
+    
+    <title>現場お助け</title>
+    <meta name="apple-mobile-web-app-title" content="現場お助け">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/q73Y9544/icon-comnetwork.png">
-    
-    <title>現場お助けポータル</title>
 
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "05381074-341a-4512-b4b5-182563105d70",
-        });
+        await OneSignal.init({ appId: "05381074-341a-4512-b4b5-182563105d70" });
       });
 
       function startApp() {
@@ -28,28 +27,26 @@
     </script>
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #ffffff; }
-        /* iPhoneのノッチ（上の出っ張り）対策 */
+        /* 背景色をGAS側の背景(#f2f2f7)と合わせることで、隙間を見えなくする */
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f2f2f7; }
+        
         iframe { 
             width: 100%; 
             height: 100%; 
             border: none; 
             z-index: 1; 
-            padding-top: env(safe-area-inset-top); 
+            /* 画面下部の見切れ対策: iframe自体を少し底上げする */
+            padding-bottom: env(safe-area-inset-bottom);
             box-sizing: border-box;
         }
         #touch-layer {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 9999;
-            background: transparent;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9999; background: transparent;
         }
     </style>
 </head>
 <body onclick="startApp()">
     <div id="touch-layer"></div>
-
     <iframe src="https://script.google.com/macros/s/AKfycbxsQXw26ec5mfJAlhtmR6sEGwV8gdm2B1n0lHqDhKvvde728bi2urwyW1tfKDJbOgo/exec?pw=cnw0515&v=1"></iframe>
 </body>
 </html>
